@@ -1,17 +1,17 @@
 plugins {
     id 'java'
+    id 'maven'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 group 'com.squareup.gifencoder'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.9
+sourceCompatibility = JavaVersion.VERSION_12
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-
 }
