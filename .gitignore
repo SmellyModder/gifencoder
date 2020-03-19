@@ -9,3 +9,6 @@ release.properties
 
 # OS X
 .DS_Store
+
+build/*
+.gradle/*
