@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
 package com.squareup.gifencoder;
 
 import org.junit.Test;
@@ -28,3 +29,4 @@ public class GifMathTest {
     assertThat(GifMath.roundUpToPowerOfTwo(5)).isEqualTo(8);
   }
 }
+*/

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
 package com.squareup.gifencoder;
 
 import java.util.Arrays;
@@ -115,3 +116,4 @@ public class ColorTest {
     assertThat(Color.BLUE.getRgbInt()).isEqualTo(0x0000FF);
   }
 }
+*/
