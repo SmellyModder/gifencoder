@@ -93,19 +93,37 @@ public final class GifEncoder {
         Multiset<Color> originalColors = image.getColors();
         Set<Color> distinctColors = originalColors.getDistinctElements();
 
-        if (distinctColors.size() > MAX_COLOR_COUNT) {
-            distinctColors = options.quantizer.quantize(originalColors, MAX_COLOR_COUNT);
-            image = options.ditherer.dither(image, distinctColors);
+        Color transColor = options.tranSet ? Color.fromRgbInt(options.transColor) : null;
+        int maxColorCount = MAX_COLOR_COUNT;
+        if (transColor != null && distinctColors.size() > maxColorCount) {
+            distinctColors.remove(transColor);  // This way we can be sure that the transparency color will not replace another color (later readded)
+            maxColorCount--;
         }
 
-        ColorTable colorTable = ColorTable.fromColors(distinctColors);
+        ColorTable colorTable;
+        int transIndex = -1;
+
+        if (distinctColors.size() > maxColorCount) {
+            distinctColors = options.quantizer.quantize(originalColors, maxColorCount);
+            if (transColor != null) {
+                distinctColors.add(transColor);
+            }
+            colorTable = ColorTable.fromColors(distinctColors);
+            if (options.tranSet && distinctColors.contains(transColor)) {
+                transIndex = colorTable.getIndexFromColor(transColor);
+            }
+
+            image = options.ditherer.dither(image, distinctColors, transColor);
+        } else {
+            colorTable = ColorTable.fromColors(distinctColors);
+            if (options.tranSet && distinctColors.contains(transColor)) {
+                transIndex = colorTable.getIndexFromColor(transColor);
+            }
+        }
+
         int paddedColorCount = colorTable.paddedSize();
         int[] colorIndices = colorTable.getIndices(image);
 
-        int transIndex = -1;
-        if (options.tranSet && originalColors.contains(Color.fromRgbInt(options.transColor))) {
-            transIndex = colorTable.getIndexFromColor(Color.fromRgbInt(options.transColor));
-        }
 
         if (transIndex == -1) {
             options.tranSet = false;

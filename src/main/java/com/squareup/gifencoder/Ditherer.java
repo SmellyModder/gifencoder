@@ -24,7 +24,8 @@ public interface Ditherer {
    *
    * @param image the original, unquantized image
    * @param newColors the quantized set of colors to be used in the new image
+   * @param transColor color that is transparent and shouldn't be dithered with
    * @return a new image containing only of colors from {@code newColors}
    */
-  Image dither(Image image, Set<Color> newColors);
+  Image dither(Image image, Set<Color> newColors, Color transColor);
 }

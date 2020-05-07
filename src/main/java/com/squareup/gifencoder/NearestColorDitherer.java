@@ -27,8 +27,9 @@ public final class NearestColorDitherer implements Ditherer {
   private NearestColorDitherer() {
   }
 
-  @Override public Image dither(Image image, Set<Color> newColors) {
+  @Override public Image dither(Image image, Set<Color> newColors, Color transColor) {
     int width = image.getWidth(), height = image.getHeight();
+    newColors.remove(transColor);
     Color[][] colors = new Color[height][width];
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
