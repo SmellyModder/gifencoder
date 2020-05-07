@@ -34,7 +34,7 @@ public final class NearestColorDitherer implements Ditherer {
         Color[][] colors = new Color[height][width];
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                if (colors[y][x] == transColor) continue;
+                if (colors[y][x].equals(transColor)) continue;
                 colors[y][x] = image.getColor(x, y).getNearestColor(newColors);
             }
         }
