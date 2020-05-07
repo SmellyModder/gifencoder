@@ -45,7 +45,7 @@ public final class FloydSteinbergDitherer implements Ditherer {
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
         Color originalColor = colors[y][x];
-        if (originalColor == transColor) continue;
+        if (originalColor.equals(transColor)) continue;
 
         Color replacementColor = originalColor.getNearestColor(newColors);
         colors[y][x] = replacementColor;
@@ -54,7 +54,7 @@ public final class FloydSteinbergDitherer implements Ditherer {
         for (ErrorComponent component : ERROR_DISTRIBUTION) {
           int siblingX = x + component.deltaX, siblingY = y + component.deltaY;
           if (siblingX >= 0 && siblingY >= 0 && siblingX < width && siblingY < height) {
-            if (colors[siblingY][siblingX] == transColor) continue;
+            if (colors[siblingY][siblingX].equals(transColor)) continue;
             Color errorComponent = error.scaled(component.errorFraction);
             colors[siblingY][siblingX] = colors[siblingY][siblingX].plus(errorComponent);
           }
