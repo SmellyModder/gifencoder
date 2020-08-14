@@ -26,12 +26,18 @@ public final class ImageOptions {
     int delayCentiSeconds = 0;
     int transColor = 0;
     boolean tranSet = false;
+    boolean usePreviousColors = false;
 
 
     /**
      * Create a new {@link ImageOptions} with all the defaults.
      */
     public ImageOptions() {
+    }
+
+    public ImageOptions setUsePreviousColors(boolean usePrevious) {
+        this.usePreviousColors = usePrevious;
+        return this;
     }
 
     public ImageOptions setLeft(int left) {

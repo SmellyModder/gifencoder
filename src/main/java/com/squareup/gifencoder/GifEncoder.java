@@ -25,6 +25,8 @@ public final class GifEncoder {
     private final OutputStream outputStream;
     private final int screenWidth, screenHeight;
 
+    private Set<Color> previousFrameColours = null;
+
     /**
      * Start creating a GIF file.
      *
@@ -90,36 +92,43 @@ public final class GifEncoder {
             throw new IllegalArgumentException("Image does not fit in screen.");
         }
 
-        Multiset<Color> originalColors = image.getColors();
-        Set<Color> distinctColors = originalColors.getDistinctElements();
-
         Color transColor = options.tranSet ? Color.fromRgbInt(options.transColor) : null;
-        int maxColorCount = MAX_COLOR_COUNT;
-        if (transColor != null && distinctColors.size() > maxColorCount) {
-            distinctColors.remove(transColor);  // This way we can be sure that the transparency color will not replace another color (later readded)
-            maxColorCount--;
-        }
-
         ColorTable colorTable;
         int transIndex = -1;
 
-        if (distinctColors.size() > maxColorCount) {
-            distinctColors = options.quantizer.quantize(originalColors, maxColorCount);
-            if (transColor != null) {
-                distinctColors.add(transColor);
-            }
-            colorTable = ColorTable.fromColors(distinctColors);
-            if (options.tranSet && distinctColors.contains(transColor)) {
-                transIndex = colorTable.getIndexFromColor(transColor);
+        if (options.usePreviousColors) {
+            colorTable = ColorTable.fromColors(previousFrameColours);
+            image = options.ditherer.dither(image, previousFrameColours, transColor);
+        } else {
+            Multiset<Color> originalColors = image.getColors();
+            Set<Color> distinctColors = originalColors.getDistinctElements();
+
+            int maxColorCount = MAX_COLOR_COUNT;
+            if (transColor != null && distinctColors.size() > maxColorCount) {
+                distinctColors.remove(transColor);  // This way we can be sure that the transparency color will not replace another color (later readded)
+                maxColorCount--;
             }
 
-            image = options.ditherer.dither(image, distinctColors, transColor);
-        } else {
-            colorTable = ColorTable.fromColors(distinctColors);
-            if (options.tranSet && distinctColors.contains(transColor)) {
-                transIndex = colorTable.getIndexFromColor(transColor);
+            if (distinctColors.size() > maxColorCount) {
+                distinctColors = options.quantizer.quantize(originalColors, maxColorCount);
+                if (transColor != null) {
+                    distinctColors.add(transColor);
+                }
+                colorTable = ColorTable.fromColors(distinctColors);
+                if (options.tranSet && distinctColors.contains(transColor)) {
+                    transIndex = colorTable.getIndexFromColor(transColor);
+                }
+
+                image = options.ditherer.dither(image, distinctColors, transColor);
+            } else {
+                colorTable = ColorTable.fromColors(distinctColors);
+                if (options.tranSet && distinctColors.contains(transColor)) {
+                    transIndex = colorTable.getIndexFromColor(transColor);
+                }
             }
+            previousFrameColours = distinctColors;
         }
+
 
         int paddedColorCount = colorTable.paddedSize();
         int[] colorIndices = colorTable.getIndices(image);
