@@ -15,15 +15,7 @@
  */
 package com.squareup.gifencoder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Implements median cut quantization.
@@ -91,7 +83,7 @@ public final class MedianCutQuantizer implements ColorQuantizer {
 
         Collection<Cluster> split() {
             List<Color> orderedColors = new ArrayList<>(colors);
-            Collections.sort(orderedColors, new ColorComponentComparator(componentWithLargestSpread));
+            orderedColors.sort(new ColorComponentComparator(componentWithLargestSpread));
             int medianIndex = orderedColors.size() / 2;
             return Arrays.asList(
                     new Cluster(new HashMultiset<>(orderedColors.subList(0, medianIndex))),

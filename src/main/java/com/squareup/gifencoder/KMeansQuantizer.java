@@ -15,13 +15,7 @@
  */
 package com.squareup.gifencoder;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Uses k-means clustering for color quantization. This tends to yield good results, but convergence
@@ -37,7 +31,7 @@ public final class KMeansQuantizer implements ColorQuantizer {
     Map<Color, Multiset<Color>> clustersByCentroid = new LinkedHashMap<>();
     Set<Color> centroidsToRecompute = getInitialCentroids(originalColors, maxColorCount);
     for (Color centroid : centroidsToRecompute) {
-      clustersByCentroid.put(centroid, new HashMultiset<Color>());
+      clustersByCentroid.put(centroid, new HashMultiset<>());
     }
     for (Color color : originalColors.getDistinctElements()) {
       int count = originalColors.count(color);
